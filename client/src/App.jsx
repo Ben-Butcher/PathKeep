@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import LoginContainer from "./pages/LoginContainer";
 import StudentDashboard from "./pages/StudentDashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
-import students from "./data/students";
+import { students } from "./data/students.js";
 
 export default function App() {
   const [view, setView] = useState("picker");

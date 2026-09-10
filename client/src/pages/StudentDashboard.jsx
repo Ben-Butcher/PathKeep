@@ -1,49 +1,42 @@
 import React, { useEffect, useState } from "react";
-import students from "../data/students";
+import { students } from "../data/students";
 import geminiService from "../services/geminiService";
-import "../css/StudentDashboard.css";
 
 function riskColor(level) {
-  if (level === "high") return "#e24b4b";
-  if (level === "medium") return "#f39c12";
-  return "#2ecc71";
+  if (level === "high") return "bg-red-500/90";
+  if (level === "medium") return "bg-amber-500/90";
+  return "bg-emerald-500/90";
 }
 
 function ModuleFlagCard({ mod }) {
   return (
-    <div className="module-card">
-      <div className="module-card-left">
-        <div className="module-name">{mod.moduleName}</div>
-        <div className="module-meta">
+    <div className="rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md p-4 flex items-center justify-between">
+      <div>
+        <div className="text-white font-medium">{mod.moduleName}</div>
+        <div className="text-sm text-white/60 flex gap-4 mt-1">
           <span>Score: {mod.averageScore}%</span>
           <span>Attendance: {mod.attendanceRate}%</span>
         </div>
       </div>
-      <div className="module-card-right">
-        <span
-          className="risk-badge"
-          style={{ background: riskColor(mod.riskLevel) }}
-        >
-          {mod.riskLevel}
-        </span>
-      </div>
+      <span
+        className={`${riskColor(mod.riskLevel)} text-slate-900 text-xs font-semibold px-3 py-1 rounded-full capitalize`}
+      >
+        {mod.riskLevel}
+      </span>
     </div>
   );
 }
 
 function StudyTimetable({ modules }) {
-  // Simple allocation: high=3, medium=2, low=1 slots per week
   const slotFor = (r) => (r === "high" ? 3 : r === "medium" ? 2 : 1);
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 
-  // Build a flat list of module slots
   const slots = [];
   modules.forEach((m) => {
     const count = slotFor(m.riskLevel);
     for (let i = 0; i < count; i++) slots.push(m.moduleName);
   });
 
-  // Distribute round-robin to days
   const dayMap = days.reduce((acc, d) => ({ ...acc, [d]: [] }), {});
   slots.forEach((modName, idx) => {
     const day = days[idx % days.length];
@@ -51,15 +44,24 @@ function StudyTimetable({ modules }) {
   });
 
   return (
-    <div className="timetable">
-      <h4>Suggested Weekly Study Timetable</h4>
-      <div className="timetable-grid">
+    <div className="rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md p-5">
+      <h4 className="text-white font-medium mb-4">
+        Suggested Weekly Study Timetable
+      </h4>
+      <div className="grid grid-cols-5 gap-3">
         {days.map((d) => (
-          <div key={d} className="timetable-day">
-            <div className="timetable-day-name">{d}</div>
-            <ul>
+          <div key={d} className="flex flex-col gap-2">
+            <div className="text-white/70 text-sm font-semibold text-center">
+              {d}
+            </div>
+            <ul className="flex flex-col gap-1">
               {dayMap[d].map((m, i) => (
-                <li key={i}>{m}</li>
+                <li
+                  key={i}
+                  className="text-xs text-white/80 bg-white/10 rounded-md px-2 py-1 text-center"
+                >
+                  {m}
+                </li>
               ))}
             </ul>
           </div>
@@ -103,17 +105,26 @@ function AIRecommendations({ flaggedModules }) {
   }, [flaggedModules]);
 
   return (
-    <div className="ai-recommendations">
-      <h4>AI Recommendations</h4>
-      {loading && <div>Loading suggestions...</div>}
-      {error && <div className="ai-error">{error}</div>}
+    <div className="rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md p-5">
+      <h4 className="text-white font-medium mb-3">AI Recommendations</h4>
+      {loading && (
+        <div className="text-white/60 text-sm">Loading suggestions...</div>
+      )}
+      {error && <div className="text-red-300 text-sm">{error}</div>}
       {!loading && !error && suggestions.length === 0 && (
-        <div>No tailored suggestions available.</div>
+        <div className="text-white/60 text-sm">
+          No tailored suggestions available.
+        </div>
       )}
       {!loading && suggestions.length > 0 && (
-        <ul>
+        <ul className="flex flex-col gap-2">
           {suggestions.map((s, i) => (
-            <li key={i}>{s}</li>
+            <li
+              key={i}
+              className="text-sm text-white/90 bg-indigo-400/10 border border-indigo-400/20 rounded-lg px-3 py-2"
+            >
+              {s}
+            </li>
           ))}
         </ul>
       )}
@@ -128,25 +139,29 @@ export default function StudentDashboard({ student: propStudent }) {
   );
 
   return (
-    <main className="student-dashboard">
-      <header className="sd-header">
-        <h2>{student.name}'s Dashboard</h2>
+    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 px-6 py-10 flex flex-col gap-8 max-w-4xl mx-auto">
+      <header>
+        <h2 className="text-2xl font-semibold text-white tracking-tight">
+          {student.name}'s Dashboard
+        </h2>
       </header>
 
-      <section className="modules-section">
-        <h3>Modules</h3>
-        <div className="modules-list">
+      <section>
+        <h3 className="text-white/70 text-sm font-semibold uppercase tracking-wide mb-3">
+          Modules
+        </h3>
+        <div className="grid gap-3">
           {student.modules.map((m) => (
             <ModuleFlagCard key={m.moduleId} mod={m} />
           ))}
         </div>
       </section>
 
-      <section className="timetable-section">
+      <section>
         <StudyTimetable modules={student.modules} />
       </section>
 
-      <section className="ai-section">
+      <section>
         <AIRecommendations flaggedModules={flagged} />
       </section>
     </main>

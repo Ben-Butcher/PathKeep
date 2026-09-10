@@ -1,4 +1,4 @@
-const students = [
+export const students = [
   {
     id: "s1",
     name: "Thabo Mbeki",
@@ -6,17 +6,17 @@ const students = [
       {
         moduleId: "m1",
         moduleName: "Data Structures",
-        riskLevel: "high",
-        averageScore: 54,
+        riskLevel: "low",
+        averageScore: 94,
         attendanceRate: 72,
         lastSubmission: "2026-09-01",
-        missedDeadlines: 3,
+        missedDeadlines: 2,
       },
       {
         moduleId: "m2",
         moduleName: "Discrete Mathametics",
-        riskLevel: "medium",
-        averageScore: 68,
+        riskLevel: "Low",
+        averageScore: 88,
         attendanceRate: 85,
         lastSubmission: "2026-09-05",
         missedDeadlines: 1,
@@ -25,7 +25,7 @@ const students = [
   },
   {
     id: "s2",
-    name: "Benjamin Park",
+    name: "Jacob Zuma",
     modules: [
       {
         moduleId: "m1",
@@ -38,7 +38,7 @@ const students = [
       },
       {
         moduleId: "m3",
-        moduleName: "Introduction to AI",
+        moduleName: "Introduction to Calculus",
         riskLevel: "low",
         averageScore: 88,
         attendanceRate: 95,
@@ -62,7 +62,7 @@ const students = [
       },
       {
         moduleId: "m4",
-        moduleName: "Networks",
+        moduleName: "Computer Fundamental B",
         riskLevel: "medium",
         averageScore: 70,
         attendanceRate: 82,
@@ -73,7 +73,7 @@ const students = [
   },
   {
     id: "s4",
-    name: "David Singh",
+    name: "Nelson Mandela",
     modules: [
       {
         moduleId: "m3",
@@ -86,7 +86,7 @@ const students = [
       },
       {
         moduleId: "m4",
-        moduleName: "Networks",
+        moduleName: "Computer Fundamentals B",
         riskLevel: "low",
         averageScore: 85,
         attendanceRate: 90,
@@ -97,7 +97,7 @@ const students = [
   },
   {
     id: "s5",
-    name: "Evelyn Zhou",
+    name: "Cat Matlala",
     modules: [
       {
         moduleId: "m1",
@@ -110,7 +110,7 @@ const students = [
       },
       {
         moduleId: "m2",
-        moduleName: "Calculus I",
+        moduleName: "Computer Science",
         riskLevel: "low",
         averageScore: 81,
         attendanceRate: 92,

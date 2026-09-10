@@ -1,52 +1,58 @@
+import { GoogleGenAI } from "@google/genai";
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+
+if (!API_KEY) {
+  throw new Error("VITE_GEMINI_API_KEY is not set in your environment");
+}
+const ai = new GoogleGenAI({
+  apiKey: API_KEY,
+});
+
 async function callApi(prompt, opts = {}) {
-  const endpoint =
-    import.meta.env.VITE_GEMINI_ENDPOINT ||
-    process.env.REACT_APP_GEMINI_ENDPOINT;
-  const apiKey =
-    import.meta.env.VITE_GEMINI_API_KEY || process.env.REACT_APP_GEMINI_API_KEY;
-
-  if (!endpoint || !apiKey) {
-    throw new Error(
-      "Gemini endpoint or API key not configured in env variables",
-    );
-  }
-
   const controller = new AbortController();
   const timeout = opts.timeout ?? 15000;
   const id = setTimeout(() => controller.abort(), timeout);
 
-  const body = {
-    // Keep body generic; callers can set `model` in opts if needed
-    model: opts.model || "gemini-default",
-    prompt,
-    max_tokens: opts.max_tokens ?? 300,
-    temperature: opts.temperature ?? 0.7,
-  };
-
   try {
-    const res = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify(body),
-      signal: controller.signal,
+    const res = await ai.models.generateContent({
+      model: opts.model || "gemini-2.5-flash",
+      contents: prompt,
     });
 
     clearTimeout(id);
 
-    if (!res.ok) {
-      const txt = await res.text().catch(() => "");
-      throw new Error(`Gemini API error ${res.status}: ${txt}`);
+    // Normalize response into a single text string for callers.
+    let text = null;
+
+    // Google GenAI shapes
+    if (res?.output && Array.isArray(res.output) && res.output[0]) {
+      const c = res.output[0].content;
+      if (Array.isArray(c) && c[0] && typeof c[0].text === "string")
+        text = c[0].text;
+      else if (typeof res.output[0].text === "string")
+        text = res.output[0].text;
     }
 
-    const data = await res.json().catch(async () => {
-      const t = await res.text();
-      return { text: t };
-    });
+    // candidates / choices
+    if (!text && res?.candidates && res.candidates[0]) {
+      if (typeof res.candidates[0].content === "string")
+        text = res.candidates[0].content;
+      else if (res.candidates[0].message?.content)
+        text = res.candidates[0].message.content;
+    }
 
-    return data;
+    // OpenAI-like
+    if (!text && res?.choices && res.choices[0]) {
+      text = res.choices[0].message?.content || res.choices[0].text || null;
+    }
+
+    if (!text && typeof res === "string") text = res;
+    if (!text && res?.text) text = res.text;
+    if (!text && res?.result?.output_text) text = res.result.output_text;
+
+    if (!text) text = JSON.stringify(res);
+
+    return { text, raw: res };
   } catch (err) {
     clearTimeout(id);
     throw err;
@@ -76,21 +82,8 @@ export async function getInterventionSuggestions(
 
   try {
     const resp = await callApi(prompt, options);
-
-    // Best-effort parsing depending on API shape
-    let text = "";
-    if (resp.choices && resp.choices[0]) {
-      // OpenAI-like shapes
-      text = resp.choices[0].message?.content || resp.choices[0].text || "";
-    } else if (resp.output?.text) {
-      text = resp.output.text;
-    } else if (typeof resp === "string") {
-      text = resp;
-    } else if (resp.text) {
-      text = resp.text;
-    } else {
-      text = JSON.stringify(resp);
-    }
+    const text =
+      (resp && resp.text) || JSON.stringify(resp && resp.raw ? resp.raw : resp);
 
     // Split into lines, strip bullets/numbers, take up to 3 suggestions
     const lines = text

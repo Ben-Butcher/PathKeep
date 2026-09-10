@@ -1,8 +1,8 @@
-const modules = [
+export const modules = [
   {
     moduleId: "m1",
     moduleName: "Data Structures",
-    lecturer: "Dr. Emma Smith",
+    lecturer: "Mr V Memani",
     totalStudents: 30,
     atRiskCount: 8,
     averageClassScore: 62,
@@ -18,15 +18,15 @@ const modules = [
   {
     moduleId: "m3",
     moduleName: "Introduction to AI",
-    lecturer: "Dr. Meera Patel",
+    lecturer: "Dr. Skhaolelo",
     totalStudents: 32,
     atRiskCount: 2,
     averageClassScore: 88,
   },
   {
     moduleId: "m4",
-    moduleName: "Networks",
-    lecturer: "Prof. Luis Gomez",
+    moduleName: "Computer Fundamentals B",
+    lecturer: "Dr NM Nkosi",
     totalStudents: 25,
     atRiskCount: 3,
     averageClassScore: 82,
