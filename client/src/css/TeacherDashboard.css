@@ -1,8 +1,45 @@
-.teacher-dashboard { padding: 20px; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial; }
-.td-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px }
-.flagged-table table { width:100%; border-collapse: collapse; background:#fff; }
-.flagged-table th, .flagged-table td { text-align:left; padding:8px 10px; border-bottom:1px solid #eee }
-.flagged-table tbody tr:hover { background:#fbfbfb }
-.modules-summary { display:grid; gap:10px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-top:12px }
-.module-summary { background:#fff; padding:10px; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.06) }
-.module-name { font-weight:700; margin-bottom:6px }
+.teacher-dashboard {
+  padding: 20px;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    Arial;
+}
+.td-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.flagged-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+.flagged-table th,
+.flagged-table td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid #eee;
+}
+.flagged-table tbody tr:hover {
+  background: #fbfbfb;
+}
+.modules-summary {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin-top: 12px;
+}
+.module-summary {
+  background: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.module-name {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
