@@ -27,6 +27,7 @@
 .welcome-text {
   font-weight: 600;
   font-size: 1.25rem;
+  text-align: center;
 }
 .login-btn {
   background: #111d4a;
